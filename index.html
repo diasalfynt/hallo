@@ -604,6 +604,11 @@
     }
     .fade-in.visible { opacity: 1; transform: none; }
 
+    /* fallback: jika JS gagal, tetap tampilkan semua */
+    @media (prefers-reduced-motion: reduce) {
+      .fade-in { opacity: 1; transform: none; }
+    }
+
     @media (max-width: 960px) {
       nav { padding: 1.2rem 2rem; }
       section { padding: 4rem 2rem; }
@@ -642,7 +647,7 @@
         Aku percaya data bukan sekadar angka — ada cerita di balik setiap baris. Aku bantu bisnis menemukan cerita itu dan mengambil keputusan yang tepat.
       </p>
       <div class="hero-cta">
-        <a href="#projects" class="btn-primary">View My Work →</a>
+        <a href="#projects" class="btn-primary">View My Work</a>
         <a href="#contact" class="btn-outline">Get in Touch</a>
       </div>
     </div>
@@ -855,11 +860,31 @@
   </section>
 
   <footer>
-    <span class="footer-text">© 2026 [Diastuti Alfiyanti] — Data Analyst</span>
+    <span class="footer-text">© 2026 Diastuti ALfiyanti — Data Analyst</span>
     <span class="footer-text">Built with <span class="footer-heart">♥</span> · Hosted on GitHub Pages</span>
   </footer>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry, i) => {
-        if (entry.isIntersecting)
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const fadeEls = document.querySelectorAll('.fade-in');
+      
+      // Force show all after short delay as safety net
+      setTimeout(() => fadeEls.forEach(el => el.classList.add('visible')), 100);
+
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.05, rootMargin: '0px 0px -50px 0px' });
+        fadeEls.forEach(el => observer.observe(el));
+      } else {
+        fadeEls.forEach(el => el.classList.add('visible'));
+      }
+    });
+  </script>
+</body>
+</html>
