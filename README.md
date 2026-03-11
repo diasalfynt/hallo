@@ -1,7 +1,7 @@
 # hallo
 disini nanti isinya penjelasan project
 struktur project:
-- -Problem
+- Problem
 - Dataset
 - Data Cleaning
 - Analysis
